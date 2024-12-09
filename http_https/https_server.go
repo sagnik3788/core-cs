@@ -8,7 +8,7 @@ import(
 
 func handler(w http.ResponseWriter, r *http.Request){
 	// fmt.Println("<h1>http server started<h1>")
-	w.Write([]byte("<h1>http server started</h1>"))
+	w.Write([]byte("<h1>https server started</h1>"))
 }
 
 func main(){
