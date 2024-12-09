@@ -1,1 +1,1 @@
-# core-cs
+ implementaion of core cs in  next 6 months 
