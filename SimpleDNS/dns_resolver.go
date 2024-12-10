@@ -53,6 +53,41 @@ func handleClient(conn net.Conn) {
 	//chache mutex and search in cache
 	cacheMutex.Lock()
 	entry, found := cache[query]
-	if()
+	if found && entry.Expiry.After(time.Now()) {
+		cacheMutex.Unlock()
+		json.NewEncoder(conn).Encode(entry.IP)
+		return
+	}
 	cacheMutex.Unlock()
+
+	//query the authoritative server
+	ip, err := queryAuthoritative(query)
+	if err != nil {
+		fmt.Printf("Error querying authritative server")
+		return
+	}
+
+	//update the cache
+	cacheMutex.Lock()
+	cache[query] = cacheEntry{
+		IP:     ip,
+		Expiry: time.Now().Add(30 * time.Second),
+	}
+	cacheMutex.Unlock()
+
+}
+
+func queryAuthoritative(domain string) (string, error) {
+	conn, err := net.Dial("tcp", "localhost:9001")
+
+	if err != nil {
+		fmt.Print("err", err)
+	}
+
+	defer conn.Close()
+
+	json.NewEncoder(conn).Encode(domain)
+	var ip string
+	err = json.NewDecoder(conn).Decode(&ip)
+	return ip, err
 }

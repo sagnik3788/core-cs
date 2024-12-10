@@ -3,9 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"os"
 	"hello/client"
 	"hello/server"
+	"os"
 )
 
 func main() {
